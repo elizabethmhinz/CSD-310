@@ -1,0 +1,127 @@
+# TRUMAN MILESTONE 2 MYSQL-PYTHON CODE #
+
+import mysql.connector
+from mysql.connector import errorcode
+line_break = "~~~~~~~~~~~~~~~~~~~~~"
+
+python_mysql = mysql.connector.connect(
+	user="root",
+	password="", 
+	host="localhost"
+)
+mycursor = python_mysql.cursor()
+print("Connected to MySQL Successfully")
+print(line_break)
+
+mycursor.execute("CREATE DATABASE Bacchus_Winery")
+print("Bacchus_Winery Database Created Successfully")
+print(line_break)
+
+print("Re-Connecting to MySQL Using New Database")
+python_mysql = mysql.connector.connect(
+	user="root",
+	password="", 
+	host="localhost",
+	database="Bacchus_Winery"
+)
+mycursor = python_mysql.cursor()
+print("Connected to MySQL Bacchus_Winery Database Successfully")
+print(line_break)
+
+mycursor.execute('
+	CREATE TABLE Department (
+		Department_ID NOT NULL AUTO_INCREMENT,
+		Department_Name	varchar(99),
+		PRIMARY KEY (Department_ID)
+);
+')
+
+mycursor.execute('
+	INSERT INTO Department (Department_Name)
+	VALUES 
+		("Owner"),
+		("Finances"),
+		("Marketing"), 
+		("Production Line"), 
+		("Distribution"),
+		("Harvesting");
+')
+
+#mycursor.execute("SELECT * FROM Department")
+#myresult = mycursor.fetchall()
+#for x in myresult:
+#	print(x)
+
+mycursor.execute("""
+	CREATE TABLE Supervisor (
+		Supervisor_ID int NOT NULL AUTO_INCREMENT,
+		Supervisor_Name varchar(99),
+		Department_ID int,
+		PRIMARY KEY (Supervisor_ID),
+		FOREIGN KEY (Department_ID)
+			REFERENCES Department(Department_ID)
+);
+""")
+
+mycursor.execute("""
+	INSERT INTO Supervisor (Supervisor_Name, Department_ID)
+	VALUES 
+		("Stan Bacchus",(SELECT Department_ID FROM Department WHERE Department_Name = "Owner")),
+		("Davis Bacchus",(SELECT Department_ID FROM Department WHERE Department_Name = "Owner")),
+		("Janet Collins",(SELECT Department_ID FROM Department WHERE Department_Name = "Finances")),
+		("Roz Murphy",(SELECT Department_ID FROM Department WHERE Department_Name = "Marketing")),
+		("Henry Doyle",(SELECT Department_ID FROM Department WHERE Department_Name = "Production Line")),
+		("Maria Costanza",(SELECT Department_ID FROM Department WHERE Department_Name = "Distribution"));
+""")
+
+mycursor.execute("""
+	CREATE TABLE Employee (
+		Employee_ID int NOT NULL AUTO_INCREMENT,
+		Employee_Name varchar(99),
+		Department_ID int,
+		Supervisor_ID int,
+		PRIMARY KEY (Employee_ID),
+		FOREIGN KEY (Department_ID)
+			REFERENCES Department(Department_ID)
+		FOREIGN KEY (Supervisor_ID)
+			REFERENCES Supervisor(Supervisor_ID)
+);
+""")
+
+mycursor.execute("""
+	INSERT INTO Employee (Employee_Name, Department_ID, Supervisor_ID)
+	VALUES 
+		("Bob Ulrich",(SELECT Department_ID FROM Department WHERE Department_Name = "Marketing"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Roz Murphy")),
+		("Kristina Lee",(SELECT Department_ID FROM Department WHERE Department_Name = "Distribution"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Maria Costanza")),
+		("Timothy Thomas",(SELECT Department_ID FROM Department WHERE Department_Name = "Production Line"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle")),
+		("Samuel James",(SELECT Department_ID FROM Department WHERE Department_Name = "Production Line"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle")),
+		("Natalie Pops",(SELECT Department_ID FROM Department WHERE Department_Name = "Production Line"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle")),
+		("Wilson Wilson",(SELECT Department_ID FROM Department WHERE Department_Name = "Production Line"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle")),
+		("Ryan Carlson",(SELECT Department_ID FROM Department WHERE Department_Name = "Production Line"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle")),
+		("Carlos Aguilar",(SELECT Department_ID FROM Department WHERE Department_Name = "Production Line"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle")),
+		("Kari Lake",(SELECT Department_ID FROM Department WHERE Department_Name = "Production Line"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle")),
+		("Owain Martins",(SELECT Department_ID FROM Department WHERE Department_Name = "Production Line"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle")),
+		("Cynthia Black",(SELECT Department_ID FROM Department WHERE Department_Name = "Harvesting"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle")),
+		("Brendan Gray",(SELECT Department_ID FROM Department WHERE Department_Name = "Production Line"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle")),
+		("Erin Young",(SELECT Department_ID FROM Department WHERE Department_Name = "Harvesting"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle")),
+		("Donald Rich",(SELECT Department_ID FROM Department WHERE Department_Name = "Harvesting"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle")),
+		("Joy Loomis",(SELECT Department_ID FROM Department WHERE Department_Name = "Harvesting"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle")),
+		("Fred West",(SELECT Department_ID FROM Department WHERE Department_Name = "Harvesting"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle")),
+		("Zac Oyama",(SELECT Department_ID FROM Department WHERE Department_Name = "Harvesting"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle")),
+		("Olive Mendez",(SELECT Department_ID FROM Department WHERE Department_Name = "Harvesting"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle")),
+		("George Novacs",(SELECT Department_ID FROM Department WHERE Department_Name = "Production Line"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle")),
+		("Patrick Hackett",(SELECT Department_ID FROM Department WHERE Department_Name = "Production Line"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle")),
+		("Doug Dawson",(SELECT Department_ID FROM Department WHERE Department_Name = "Production Line"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle")),
+		("Leon Yarrows",(SELECT Department_ID FROM Department WHERE Department_Name = "Production Line"),(SELECT Supervisor_ID FROM Supervisor WHERE Supervisor_Name = "Henry Doyle"));
+""")
+
+
+
+
+
+
+
+
+
+
+
